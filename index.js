@@ -67,16 +67,40 @@ document.addEventListener("DOMContentLoaded", () => {
       moveFood();
       // move the food
     } else {
-      snake.pop();
+      snake.pop(); //remove the last cell
     }
+  }
+
+  function isGameOver() {
+    for (i = 1; i < snake.length; i++) {
+      if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) return true;
+    }
+    const isHittingLeftWall = snake[0].x < 0;
+    const isHittingRighttWall = snake[0].x >= arenaSize;
+    const isHittingTopWall = snake[0].y < 0;
+    const isHittingDownWall = snake[0].y >= arenaSize;
+    return (
+      isHittingDownWall ||
+      isHittingLeftWall ||
+      isHittingRighttWall ||
+      isHittingTopWall
+    );
   }
 
   function gameLoop() {
     setInterval(() => {
+      if (!gameStarted) return;
+      // check for gameover
+      if (isGameOver()) {
+        gameStarted = false;
+        alert(`Game Over,Score=${score}`);
+        window.location.reload();
+        return;
+      }
       updateSnake();
       drawScoreBoard();
       drawFoodAndSnake();
-    }, 1000);
+    }, 100);
   }
 
   function runGame() {
