@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let gameStarted = false;
   let food = { x: 300, y: 300 };
-  let sanke = [
+  let snake = [
     { x: 160, y: 200 },
     { x: 140, y: 200 },
     { x: 120, y: 200 },
@@ -28,6 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function drawFoodAndSnake() {
     gameArena.innerHTML = ""; //if previously something is drawn remove it
     // wipe out everything and redraw with new coordinates when snake moves
+
+    snake.forEach((snakeCell) => {
+      const element = drawDiv(snakeCell.x, snakeCell.y, "snake");
+      gameArena.appendChild(element);
+    });
+
     const foodElement = drawDiv(food.x, food.y, "food");
     gameArena.appendChild(foodElement);
   }
