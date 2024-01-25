@@ -12,13 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   let dx = cellSize; // displacement on x axis
   let dy = 0; // displacement on y axis
-
   let gameSpeed = 200;
   let intervalId;
 
   function drawScoreBoard() {
     const scoreBoard = document.getElementById("score-board");
-    scoreBoard.textContent = `Score: ${score}`;
+    scoreBoard.textContent = `Score : ${score}`;
   }
 
   function drawDiv(x, y, className) {
@@ -28,9 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
     div.style.left = `${x}px`;
     return div;
   }
+
   function drawFoodAndSnake() {
-    gameArena.innerHTML = ""; //if previously something is drawn remove it
-    // wipe out everything and redraw with new coordinates when snake moves
+    gameArena.innerHTML = ""; // if previously something is drawn remove it
+    // Wipe out everything and redraw with new coordinates when snake moves
 
     snake.forEach((snakeCell) => {
       const element = drawDiv(snakeCell.x, snakeCell.y, "snake");
@@ -43,9 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function moveFood() {
     let newX, newY;
-    // create new random coordiantes if it is same as any of the  sanke's coordinate
-    // again re initiate the random call if the random coordinates
-    // don't match with any of the snake cell stop
     do {
       newX =
         Math.floor(Math.random() * ((arenaSize - cellSize) / cellSize)) *
@@ -59,49 +56,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
     food = { x: newX, y: newY };
   }
+
   function updateSnake() {
+    console.log("Update snake called");
     // 1. Calculate new coordinate the snake head will go to
     const newHead = { x: snake[0].x + dx, y: snake[0].y + dy };
     snake.unshift(newHead); // add the new head
     if (newHead.x === food.x && newHead.y === food.y) {
       // collision
+      console.log("Collided");
       score += 5;
       if (gameSpeed > 30) {
         clearInterval(intervalId);
+
         gameSpeed -= 10;
+
         gameLoop();
       }
       // dont pop the tail
       moveFood();
       // move the food
     } else {
-      snake.pop(); //remove the last cell
+      snake.pop(); // remove the last cell
     }
   }
 
   function isGameOver() {
+    // check snake body hit
     for (i = 1; i < snake.length; i++) {
-      if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) return true;
+      if (snake[0].x === snake[i].x && snake[0].y === snake[i].y) return true; // game over
     }
+
+    // check wall collision
     const isHittingLeftWall = snake[0].x < 0;
-    const isHittingRighttWall = snake[0].x >= arenaSize;
     const isHittingTopWall = snake[0].y < 0;
+    const isHittingRightWall = snake[0].x >= arenaSize;
     const isHittingDownWall = snake[0].y >= arenaSize;
+
     return (
       isHittingDownWall ||
       isHittingLeftWall ||
-      isHittingRighttWall ||
+      isHittingRightWall ||
       isHittingTopWall
-    );
+    ); // game over
   }
 
   function gameLoop() {
+    console.log(gameSpeed);
     intervalId = setInterval(() => {
+      console.log(gameSpeed);
       if (!gameStarted) return;
-      // check for gameover
+      // check for game over
       if (isGameOver()) {
         gameStarted = false;
-        alert(`Game Over,Score=${score}`);
+        alert(`Game Over, Score = ${score}`);
         window.location.reload();
         return;
       }
@@ -155,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function initiateGmae() {
+  function initiateGame() {
     const scoreBoard = document.createElement("div");
     scoreBoard.id = "score-board";
     document.body.insertBefore(scoreBoard, gameArena);
@@ -171,5 +179,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  initiateGmae(); // this is the first function to be executed so that we prepare the ui
+  initiateGame(); // this is the first function to be executed so that we prepare the ui
 });
