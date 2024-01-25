@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cellSize = 20;
   let score = 0;
   let gameStarted = false;
-  let food = { x: 300, y: 300 };
+  let food = { x: 300, y: 200 };
   let snake = [
     { x: 160, y: 200 },
     { x: 140, y: 200 },
@@ -38,8 +38,42 @@ document.addEventListener("DOMContentLoaded", () => {
     gameArena.appendChild(foodElement);
   }
 
+  function moveFood() {
+    let newX, newY;
+    // create new random coordiantes if it is same as any of the  sanke's coordinate
+    // again re initiate the random call if the random coordinates
+    // don't match with any of the snake cell stop
+    do {
+      newX = Math.floor(
+        Math.random() * ((arenaSize - cellSize) / cellSize) * cellSize
+      );
+      newY = Math.floor(
+        Math.random() * ((arenaSize - cellSize) / cellSize) * cellSize
+      );
+    } while (
+      snake.some((snakeCell) => snakeCell.x === newX && snakeCell.y === newY)
+    );
+
+    food = { x: newX, y: newY };
+  }
+  function updateSnake() {
+    // 1. Calculate new coordinate the snake head will go to
+    const newHead = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(newHead); // add the new head
+    if (newHead.x === food.x && newHead.y === food.y) {
+      // collision
+      score += 5;
+      // dont pop the tail
+      moveFood();
+      // move the food
+    } else {
+      snake.pop();
+    }
+  }
+
   function gameLoop() {
     setInterval(() => {
+      updateSnake();
       drawScoreBoard();
       drawFoodAndSnake();
     }, 1000);
